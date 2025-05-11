@@ -1,12 +1,19 @@
 # Contributing to TimerClock
 
-Thank you for your interest in contributing to TimerClock! This document provides guidelines and instructions for contributing.
+First off, thank you for considering contributing to TimerClock! It's people like you that make TimerClock such a great tool. This document provides guidelines and workflows to make the contribution process smooth and effective.
 
 ## Code of Conduct
 
-Please be respectful and considerate of others when contributing to this project.
+We are committed to providing a friendly, safe, and welcoming environment for all contributors. We expect all participants to:
 
-## How to Contribute
+- Be respectful and inclusive
+- Be patient and welcoming to newcomers
+- Be considerate of others' viewpoints
+- Focus on what is best for the community
+
+## Getting Started
+
+Before you begin:
 
 ### Reporting Bugs
 

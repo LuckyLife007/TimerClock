@@ -10,7 +10,9 @@ namespace TimerClockApp
         private readonly TimerService _timerService;
         private readonly ClockService _clockService;
         private readonly DisplayManager _displayManager;
-        private int _timerMinutes = Properties.Settings.Default.LastTimerMinutes;
+        private readonly ILogger _logger;
+        private readonly ISettings _settings;
+        private int _timerMinutes;
         private string _timeDisplay = "00:00";
         private bool _disposed;
 
@@ -38,6 +40,7 @@ namespace TimerClockApp
                 {
                     _timerMinutes = value;
                     OnPropertyChanged(nameof(TimerMinutes));
+                    _logger.LogDebug($"Timer minutes set to: {value}");
                 }
             }
         }
@@ -66,11 +69,15 @@ namespace TimerClockApp
         public ICommand ClockModeCommand { get; }
         public ICommand AutoModeCommand { get; }
 
-        public ControlPanelViewModel()
+        public ControlPanelViewModel(ISettings? settings = null, ILogger? logger = null)
         {
-            _timerService = new TimerService();
-            _clockService = new ClockService();
-            _displayManager = new DisplayManager();
+            _logger = logger ?? new Logger();
+            _settings = settings ?? new DefaultSettings();
+            _timerMinutes = _settings.LastTimerMinutes;
+
+            _timerService = new TimerService(_settings, _logger);
+            _clockService = new ClockService(_logger);
+            _displayManager = new DisplayManager(_settings, _logger);
 
             StartCommand = new RelayCommand(StartTimer);
             PlayPauseCommand = new RelayCommand(PlayPauseTimer);
@@ -85,92 +92,18 @@ namespace TimerClockApp
 
             SetMode("Clock");
             UpdateTimeDisplay();
+
+            _logger.LogInformation("ControlPanelViewModel initialized");
         }
-
-        private void TimerService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (!_displayManager.ShowingClock)
-            {
-                UpdateTimeDisplay();
-            }
-
-            switch (e.PropertyName)
-            {
-                case nameof(TimerService.IsRunning):
-                    OnPropertyChanged(nameof(IsTimerRunning));
-                    OnPropertyChanged(nameof(IsPlayPauseEnabled));
-                    OnPropertyChanged(nameof(AutoModeEnabled));
-                    break;
-                case nameof(TimerService.IsPaused):
-                    OnPropertyChanged(nameof(IsPaused));
-                    OnPropertyChanged(nameof(PlayPauseButtonText));
-                    break;
-                case nameof(TimerService.IsNegative):
-                    OnPropertyChanged(nameof(IsNegative));
-                    break;
-                case nameof(TimerService.IsWarning):
-                    OnPropertyChanged(nameof(IsWarning));
-                    break;
-            }
-        }
-
-        private void ClockService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (_displayManager.ShowingClock)
-            {
-                UpdateTimeDisplay();
-            }
-        }
-
-        private void DisplayManager_DisplayTypeChanged(object? sender, EventArgs e)
-        {
-            UpdateTimeDisplay();
-            OnPropertyChanged(nameof(ShowingClock));
-            UpdateModeBackgrounds();
-        }
-
-        private void UpdateModeBackgrounds()
-        {
-            OnPropertyChanged(nameof(TimerModeBackground));
-            OnPropertyChanged(nameof(ClockModeBackground));
-            OnPropertyChanged(nameof(AutoModeBackground));
-        }
-
-        private void SetMode(string mode)
-        {
-            _displayManager.DisplayMode = mode;
-            UpdateModeBackgrounds();
-        }
-
-        private void UpdateTimeDisplay()
-        {
-            if (_displayManager.ShowingClock)
-            {
-                TimeDisplay = _clockService.CurrentTime.ToString("HH':'mm':'ss");
-            }
-            else
-            {
-                var timeLeft = _timerService.TimeLeft;
-                if (timeLeft < TimeSpan.Zero)
-                {
-                    TimeDisplay = "-" + $"{(int)Math.Abs(timeLeft.TotalMinutes)}:{Math.Abs(timeLeft.Seconds):D2}";
-                }
-                else
-                {
-                    TimeDisplay = $"{(int)timeLeft.TotalMinutes}:{timeLeft.Seconds:D2}";
-                }
-            }
-        }
-
 
         private void StartTimer()
         {
             if (!IsTimerRunning)
             {
+                _settings.LastTimerMinutes = TimerMinutes;
                 _timerService.Start(TimerMinutes);
-                Properties.Settings.Default.LastTimerMinutes = TimerMinutes;
-                Properties.Settings.Default.Save();
                 UpdateTimeDisplay();
+                _logger.LogInformation($"Timer started with {TimerMinutes} minutes");
             }
         }
 
@@ -195,6 +128,73 @@ namespace TimerClockApp
             }
             _timerService.Reset(TimerMinutes);
             UpdateTimeDisplay();
+            _logger.LogInformation("Timer reset");
+        }
+
+        private void UpdateTimeDisplay()
+        {
+            if (_displayManager.ShowingClock)
+            {
+                TimeDisplay = _clockService.CurrentTime.ToString("HH':'mm':'ss");
+            }
+            else
+            {
+                var timeLeft = _timerService.TimeLeft;
+                if (timeLeft < TimeSpan.Zero)
+                {
+                    TimeDisplay = "-" + $"{(int)Math.Abs(timeLeft.TotalMinutes)}:{Math.Abs(timeLeft.Seconds):D2}";
+                }
+                else
+                {
+                    TimeDisplay = $"{(int)timeLeft.TotalMinutes}:{timeLeft.Seconds:D2}";
+                }
+            }
+        }
+
+        private void SetMode(string mode)
+        {
+            _displayManager.DisplayMode = mode;
+            OnPropertyChanged(nameof(TimerModeBackground));
+            OnPropertyChanged(nameof(ClockModeBackground));
+            OnPropertyChanged(nameof(AutoModeBackground));
+            UpdateTimeDisplay();
+        }
+
+        private void TimerService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(TimerService.TimeLeft):
+                case nameof(TimerService.IsNegative):
+                    UpdateTimeDisplay();
+                    break;
+                case nameof(TimerService.IsRunning):
+                    OnPropertyChanged(nameof(IsTimerRunning));
+                    OnPropertyChanged(nameof(IsPlayPauseEnabled));
+                    OnPropertyChanged(nameof(AutoModeEnabled));
+                    break;
+                case nameof(TimerService.IsPaused):
+                    OnPropertyChanged(nameof(IsPaused));
+                    OnPropertyChanged(nameof(PlayPauseButtonText));
+                    break;
+                case nameof(TimerService.IsWarning):
+                    OnPropertyChanged(nameof(IsWarning));
+                    break;
+            }
+        }
+
+        private void ClockService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ClockService.CurrentTime) && ShowingClock)
+            {
+                UpdateTimeDisplay();
+            }
+        }
+
+        private void DisplayManager_DisplayTypeChanged(object? sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(ShowingClock));
+            UpdateTimeDisplay();
         }
 
         protected virtual void OnPropertyChanged(string propertyName)
@@ -208,9 +208,18 @@ namespace TimerClockApp
             {
                 if (disposing)
                 {
+                    _timerService.PropertyChanged -= TimerService_PropertyChanged;
+                    _clockService.PropertyChanged -= ClockService_PropertyChanged;
+                    _displayManager.DisplayTypeChanged -= DisplayManager_DisplayTypeChanged;
+
                     _timerService.Dispose();
                     _clockService.Dispose();
                     _displayManager.Dispose();
+
+                    if (_logger is IDisposable disposableLogger)
+                    {
+                        disposableLogger.Dispose();
+                    }
                 }
                 _disposed = true;
             }

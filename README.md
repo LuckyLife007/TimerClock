@@ -1,16 +1,25 @@
-# TimerClock Application
+# TimerClock
 
-A simple application that functions as both a timer and a clock with a display window.
+A professional dual-purpose application that combines countdown timer and clock functionality with a clean, customizable display interface. Perfect for presentations, time management, and any scenario requiring visible time tracking.
 
 ## Features
 
-- Timer mode: Set a countdown timer
-- Clock mode: Display the current time
-- Auto mode: Toggle between timer and clock
-- Warning animation when time is running low
-- Negative time indication
-- Adjustable opacity settings
-- Customizable display options
+### Display Modes
+- **Timer Mode**: Configurable countdown timer (1-200 minutes)
+- **Clock Mode**: Real-time digital clock display
+- **Auto Mode**: Smart switching between timer and clock displays
+
+### Visual Alerts
+- Warning indicators when timer approaches completion (customizable threshold)
+- Negative time tracking with visual feedback
+- Synchronized animations across control and display windows
+
+### Customization
+- Adjustable opacity for both control panel and display window
+- Always-on-top option for both windows
+- Configurable auto-switch interval in Auto mode
+- Drag-and-drop window positioning
+- Window state management (minimize, maximize, restore)
 
 ## Release Process
 
@@ -39,15 +48,70 @@ To build and release the application:
 4. Compile the script to create an installer executable
 5. The installer will be available in the `Release\Installer` directory
 
-## Installation
+## Installation Methods
 
-Double-click the installer executable and follow the on-screen instructions.
+### Standard Installation (Recommended)
+1. Download the latest `TimerClockSetup.exe` from the Releases page
+2. Run the installer and follow the on-screen instructions
+3. Launch TimerClock from the Start menu or desktop shortcut
+
+### Portable Installation
+1. Download the self-contained `TimerClock-[version].zip` package
+2. Extract to your preferred location
+3. Run `TimerClockApp.exe`
+
+### Developer Installation
+1. Clone the repository: `git clone [repository-url]`
+2. Open `TimerClockSolution.sln` in Visual Studio
+3. Build and run the solution
 
 ## System Requirements
 
-- Windows 10 or newer
-- .NET 8.0 Runtime (included in self-contained deployments)
+### Minimum Requirements
+- Operating System: Windows 10 or newer
+- Architecture: x64
+- Memory: 50MB RAM
+- Storage: 100MB free space
+
+### Development Requirements
+- Visual Studio 2022 or newer
+- .NET 8.0 SDK
+- Windows 10/11 SDK
+- Inno Setup (optional, for building installer)
+
+## User Guide
+
+### Basic Usage
+1. Launch TimerClock
+2. Set desired timer duration (1-200 minutes)
+3. Choose mode:
+   - Timer: Countdown mode
+   - Clock: Real-time display
+   - Auto: Alternates between modes
+
+### Customization
+- Access settings via the gear icon
+- Adjust opacity, warning times, and display preferences
+- Position windows as needed with drag-and-drop
+
+### Keyboard Shortcuts
+- Space: Play/Pause timer
+- Esc: Reset timer
+- Alt+Enter: Toggle fullscreen (display window)
+
+## Support
+
+For support, bug reports, or feature requests:
+1. Check the [Issues](issues) page
+2. Create a new issue with detailed information
+3. Follow the contributing guidelines
 
 ## License
 
-See LICENSE.txt for details. 
+This project is licensed under the MIT License - see [LICENSE.txt](LICENSE.txt) for details.
+
+## Acknowledgments
+
+- Contributors and maintainers
+- .NET Community
+- User feedback and suggestions
