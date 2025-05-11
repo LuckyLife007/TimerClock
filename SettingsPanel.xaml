@@ -1,0 +1,87 @@
+<Window x:Class="TimerClockApp.SettingsPanel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings" 
+        Height="400" 
+        Width="400"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Control Panel Opacity:" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Slider x:Name="ControlOpacitySlider" 
+                        Minimum="20" Maximum="100" 
+                        Width="250"
+                        Margin="0,5"
+						ValueChanged="ControlOpacitySlider_ValueChanged"/>
+                <TextBlock Text="{Binding ElementName=ControlOpacitySlider, Path=Value, StringFormat={}{0:0}%}" 
+                           VerticalAlignment="Center" 
+                           Margin="10,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="0,0,0,10">
+            <TextBlock Text="Display Window Opacity:" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Slider x:Name="DisplayOpacitySlider" 
+                        Minimum="20" Maximum="100" 
+                        Width="250"
+                        Margin="0,5"
+						ValueChanged="DisplayOpacitySlider_ValueChanged"/>
+                <TextBlock Text="{Binding ElementName=DisplayOpacitySlider, Path=Value, StringFormat={}{0:0}%}" 
+                           VerticalAlignment="Center" 
+                           Margin="10,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="0,0,0,10">
+            <TextBlock Text="Warning Time (seconds):" VerticalAlignment="Center"/>
+            <TextBox x:Name="WarningTimeTextBox" 
+                     Width="100" 
+                     HorizontalAlignment="Left"
+                     LostFocus="WarningTimeTextBox_LostFocus"/>
+        </StackPanel>
+
+		<StackPanel Grid.Row="3" Margin="0,0,0,10">
+			<TextBlock Text="Auto Switch Interval (seconds):" VerticalAlignment="Center"/>
+			<TextBox x:Name="AutoSwitchIntervalTextBox"
+					 Width="100"
+					 HorizontalAlignment="Left"
+					 LostFocus="AutoSwitchIntervalTextBox_LostFocus"/>
+		</StackPanel>
+
+        <CheckBox x:Name="ControlTopmostCheckbox" 
+                  Grid.Row="4" 
+                  Content="Keep Control Panel above other apps"
+                  Margin="0,0,0,10"/>
+
+        <CheckBox x:Name="DisplayTopmostCheckbox" 
+                  Grid.Row="5" 
+                  Content="Keep Display Window above other apps"
+                  Margin="0,0,0,10"/>
+
+        <StackPanel Grid.Row="6" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Bottom">
+            <Button Content="Save" 
+                    Width="100" 
+                    Margin="0,0,10,0"
+                    Click="SaveButton_Click"/>
+            <Button Content="Cancel" 
+                    Width="100"
+                    Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
