@@ -1,4 +1,4 @@
-﻿<Window x:Class="TimerClockApp.ControlPanel"
+<Window x:Class="TimerClockApp.ControlPanel"
         x:ClassModifier="public"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -57,8 +57,10 @@
         <!-- Main Grid Layout -->
         <Border BorderBrush="Black"
                 BorderThickness="0.5">
-                <Grid Background="LightGray"
-                      IsHitTestVisible="True">
+                <Grid x:Name="MainGrid"
+                                Background="LightGray"
+                      IsHitTestVisible="True"
+                      Loaded="Window_Loaded">
                         <!-- Define rows for the layout -->
                         <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -155,7 +157,6 @@
                                         IsEnabled="{Binding AutoModeEnabled}"
                                         Background="{Binding AutoModeBackground}"/>
                         </StackPanel>
-
                         <!-- Timer Input -->
                         <StackPanel Grid.Row="3"
                                     Orientation="Horizontal"

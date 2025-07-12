@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TimerClockApp": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

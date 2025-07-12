@@ -1,4 +1,7 @@
-﻿using System.Windows;
+using System;
+using System.Windows;
+using System.Windows.Input;
+using System.Linq;
 
 namespace TimerClockApp
 {
@@ -9,15 +12,14 @@ namespace TimerClockApp
             InitializeComponent();
             LoadSettings();
         }
-
         private void LoadSettings()
         {
             ControlOpacitySlider.Value = Properties.Settings.Default.ControlOpacity * 100;
             DisplayOpacitySlider.Value = Properties.Settings.Default.DisplayOpacity * 100;
             WarningTimeTextBox.Text = Properties.Settings.Default.WarningTime.ToString();
-            AutoSwitchIntervalTextBox.Text = Properties.Settings.Default.AutoSwitchInterval.ToString();
-            ControlTopmostCheckbox.IsChecked = Properties.Settings.Default.ControlTopmost;
+            AutoSwitchIntervalTextBox.Text = Properties.Settings.Default.AutoSwitchInterval.ToString(); ControlTopmostCheckbox.IsChecked = Properties.Settings.Default.ControlTopmost;
             DisplayTopmostCheckbox.IsChecked = Properties.Settings.Default.DisplayTopmost;
+
 
             // Force owner to 100% opacity while settings are open
             if (Owner != null)
@@ -63,6 +65,7 @@ namespace TimerClockApp
             Properties.Settings.Default.AutoSwitchInterval = int.Parse(AutoSwitchIntervalTextBox.Text);
             Properties.Settings.Default.ControlTopmost = ControlTopmostCheckbox.IsChecked ?? false;
             Properties.Settings.Default.DisplayTopmost = DisplayTopmostCheckbox.IsChecked ?? false;
+
             Properties.Settings.Default.Save();
 
             // Update the DisplayWindow's Topmost property immediately
@@ -72,14 +75,28 @@ namespace TimerClockApp
                 displayWindow.Topmost = Properties.Settings.Default.DisplayTopmost;
             }
 
+            // Set DialogResult and close the window
             DialogResult = true;
             Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             Close();
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Ensure the window closes without interference
+            if (FocusManager.GetFocusedElement(this) is UIElement focusedElement)
+            {
+                focusedElement.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+            }
+
+            // Allow the window to close without requiring a second click
+            e.Cancel = false;
+        }
+
+
     }
 }

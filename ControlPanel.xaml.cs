@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Linq;
 
 namespace TimerClockApp
 {
@@ -30,9 +32,20 @@ namespace TimerClockApp
 
             // Setup the animations
             SetupAnimations();
-            
+
             // Register for property changes to update animations
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            // Register for settings changed event
+            SettingsButton.Click += (s, e) =>
+            {
+                var settingsPanel = new SettingsPanel { Owner = this };
+                if (settingsPanel.ShowDialog() == true)
+                {
+                    Opacity = Properties.Settings.Default.ControlOpacity;
+                    Topmost = Properties.Settings.Default.ControlTopmost;
+                }
+            };
         }
 
         private void SetupAnimations()
@@ -167,6 +180,10 @@ namespace TimerClockApp
             StopWarningAnimation();
         }
 
+
+
+
+
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             var settingsPanel = new SettingsPanel
@@ -179,6 +196,8 @@ namespace TimerClockApp
                 // Update settings immediately after save
                 Opacity = Properties.Settings.Default.ControlOpacity;
                 Topmost = Properties.Settings.Default.ControlTopmost;
+
+
             }
         }
 
@@ -203,6 +222,27 @@ namespace TimerClockApp
             Application.Current.Shutdown();
         }
 
+        // Draggable Icon Logic
+        private void DragHandle_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
+        // Minimize
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        // Close
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
         private void TimerInput_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (!int.TryParse(e.Text, out _))
@@ -224,25 +264,9 @@ namespace TimerClockApp
             }
         }
 
-        // Draggable Icon Logic
-        private void DragHandle_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragMove();
-            }
-        }
-
-        // Minimize
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        // Close
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
+            // No quick timer buttons to initialize
         }
     }
 }
