@@ -123,7 +123,6 @@ namespace TimerClockApp
 
         private void HandlePropertyChange(string? propertyName)
         {
-            System.Diagnostics.Debug.WriteLine($"QQQ DisplayWindow property changed: {propertyName}");
             switch (propertyName)
             {
                 case nameof(ControlPanelViewModel.ShowingClock):
@@ -133,7 +132,6 @@ namespace TimerClockApp
                 case nameof(ControlPanelViewModel.IsWarning):
                     if (!_viewModel.ShowingClock)
                     {
-                        System.Diagnostics.Debug.WriteLine($"QQQ Updating animations - IsWarning: {_viewModel.IsWarning}, ShowingClock: {_viewModel.ShowingClock}");
                         UpdateAnimationStates();
                     }
                     break;
@@ -166,23 +164,17 @@ namespace TimerClockApp
 
         private void StartNegativeAnimation()
         {
-            System.Diagnostics.Debug.WriteLine("QQQ StartNegativeAnimation - Storyboard null? " + (_negativeStoryboard == null));
             if (_negativeStoryboard != null)
             {
-                System.Diagnostics.Debug.WriteLine("QQQ Starting negative storyboard");
                 _negativeStoryboard.Begin();
-                System.Diagnostics.Debug.WriteLine("QQQ Negative storyboard started");
             }
         }
 
         private void StartWarningAnimation()
         {
-            System.Diagnostics.Debug.WriteLine("QQQ StartWarningAnimation - Storyboard null? " + (_warningStoryboard == null));
             if (_warningStoryboard != null)
             {
-                System.Diagnostics.Debug.WriteLine("QQQ Starting warning storyboard");
                 _warningStoryboard.Begin();
-                System.Diagnostics.Debug.WriteLine("QQQ Warning storyboard started");
             }
         }
 

@@ -61,8 +61,8 @@ To build and release the application:
 3. Run `TimerClockApp.exe`
 
 ### Developer Installation
-1. Clone the repository: `git clone [repository-url]`
-2. Open `TimerClockSolution.sln` in Visual Studio
+1. Clone the repository: `git clone <your-repository-url>`
+2. Open `TimerClockApp.sln` in Visual Studio
 3. Build and run the solution
 
 ## System Requirements

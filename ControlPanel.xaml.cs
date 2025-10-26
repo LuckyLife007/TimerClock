@@ -35,17 +35,6 @@ namespace TimerClockApp
 
             // Register for property changes to update animations
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-            // Register for settings changed event
-            SettingsButton.Click += (s, e) =>
-            {
-                var settingsPanel = new SettingsPanel { Owner = this };
-                if (settingsPanel.ShowDialog() == true)
-                {
-                    Opacity = Properties.Settings.Default.ControlOpacity;
-                    Topmost = Properties.Settings.Default.ControlTopmost;
-                }
-            };
         }
 
         private void SetupAnimations()
@@ -181,9 +170,6 @@ namespace TimerClockApp
         }
 
 
-
-
-
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             var settingsPanel = new SettingsPanel
@@ -196,8 +182,6 @@ namespace TimerClockApp
                 // Update settings immediately after save
                 Opacity = Properties.Settings.Default.ControlOpacity;
                 Topmost = Properties.Settings.Default.ControlTopmost;
-
-
             }
         }
 
