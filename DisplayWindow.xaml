@@ -12,6 +12,13 @@
         WindowStyle="None"
         Background="LightGray"
         Loaded="Window_Loaded">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/TimerClockApp;component/Resources/Animations.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
         <Grid Background="LightGray"
               IsHitTestVisible="True">
                 <!-- Draggable Icon (Top Left) -->
@@ -88,12 +95,12 @@
                                            FontFamily="Consolas"
                                            FontWeight="Bold"
                                            Text="{Binding TimeDisplay}"/>
-                                <Border x:Name="WarningTimeIndicator"
+                                <Border x:Name="WarningTimeIndicator" Style="{StaticResource TimeIndicatorStyle}"
                                         Background="Orange"
                                         Opacity="0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"/>
-                                <Border x:Name="NegativeTimeIndicator"
+                                <Border x:Name="NegativeTimeIndicator" Style="{StaticResource TimeIndicatorStyle}"
                                         Background="Red"
                                         Opacity="0"
                                         HorizontalAlignment="Stretch"

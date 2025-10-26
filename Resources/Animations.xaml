@@ -1,0 +1,46 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:TimerClockApp"
+                    >
+    <!-- Warning blink -->
+    <Storyboard x:Key="WarningBlink" RepeatBehavior="Forever" AutoReverse="True">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="1" To="0.2" Duration="0:0:0.6" />
+    </Storyboard>
+
+    <!-- Negative blink -->
+    <Storyboard x:Key="NegativeBlink" RepeatBehavior="Forever" AutoReverse="True">
+        <ColorAnimation Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                        From="Red" To="#66FF0000" Duration="0:0:0.5" />
+    </Storyboard>
+
+    <!-- Generic indicator style -->
+    <Style x:Key="TimeIndicatorStyle" TargetType="Border">
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Style.Triggers>
+            <!-- Warning -->
+            <DataTrigger Binding="{Binding CurrentState}" Value="{x:Static local:DisplayState.Warning}">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="Background" Value="Orange" />
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard x:Name="WarnSB" Storyboard="{StaticResource WarningBlink}" />
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <StopStoryboard BeginStoryboardName="WarnSB" />
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+            <!-- Negative -->
+            <DataTrigger Binding="{Binding CurrentState}" Value="{x:Static local:DisplayState.Negative}">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="Background" Value="Red" />
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard x:Name="NegSB" Storyboard="{StaticResource NegativeBlink}" />
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <StopStoryboard BeginStoryboardName="NegSB" />
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

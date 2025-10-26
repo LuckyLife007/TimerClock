@@ -16,6 +16,24 @@ namespace TimerClockApp
         private string _timeDisplay = "00:00";
         private bool _disposed;
 
+        private DisplayState _currentState = DisplayState.Normal;
+
+        /// <summary>
+        /// Combined visual state used by the UI to decide which animation to play.
+        /// </summary>
+        public DisplayState CurrentState
+        {
+            get => _currentState;
+            private set
+            {
+                if (_currentState != value)
+                {
+                    _currentState = value;
+                    OnPropertyChanged(nameof(CurrentState));
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public string TimeDisplay
@@ -96,6 +114,29 @@ namespace TimerClockApp
             _logger.LogInformation("ControlPanelViewModel initialized");
         }
 
+        private void UpdateDisplayState()
+        {
+            if (!_displayManager.ShowingClock && IsTimerRunning && !IsPaused)
+            {
+                if (IsNegative)
+                {
+                    CurrentState = DisplayState.Negative;
+                }
+                else if (IsWarning)
+                {
+                    CurrentState = DisplayState.Warning;
+                }
+                else
+                {
+                    CurrentState = DisplayState.Normal;
+                }
+            }
+            else
+            {
+                CurrentState = DisplayState.Normal;
+            }
+        }
+
         private void StartTimer()
         {
             if (!IsTimerRunning)
@@ -170,15 +211,18 @@ namespace TimerClockApp
                     break;
                 case nameof(TimerService.IsRunning):
                     OnPropertyChanged(nameof(IsTimerRunning));
+                    UpdateDisplayState();
                     OnPropertyChanged(nameof(IsPlayPauseEnabled));
                     OnPropertyChanged(nameof(AutoModeEnabled));
                     break;
                 case nameof(TimerService.IsPaused):
                     OnPropertyChanged(nameof(IsPaused));
+                    UpdateDisplayState();
                     OnPropertyChanged(nameof(PlayPauseButtonText));
                     break;
                 case nameof(TimerService.IsWarning):
                     OnPropertyChanged(nameof(IsWarning));
+                    UpdateDisplayState();
                     break;
             }
         }
