@@ -36,10 +36,10 @@ $Shortcut.Save()
 
 # Create zip archive
 Write-Host "Creating ZIP archive..."
-Compress-Archive -Path "$installerPath\TimerClock\*" -DestinationPath "$outputPath\TimerClock-1.0.0.zip" -Force
+Compress-Archive -Path "$installerPath\TimerClock\*" -DestinationPath "$outputPath\TimerClock-2.0.0.zip" -Force
 
 Write-Host "Release preparation complete!"
 Write-Host "Release files are available at: $outputPath"
-Write-Host "Installer ZIP: $outputPath\TimerClock-1.0.0.zip"
+Write-Host "Installer ZIP: $outputPath\TimerClock-2.0.0.zip"
 Write-Host ""
 Write-Host "Note: To create a proper installer, consider using tools like Inno Setup, WiX Toolset, or NSIS." 
