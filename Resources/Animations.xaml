@@ -2,10 +2,23 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:TimerClockApp"
                     >
-    <!-- Warning blink -->
-    <Storyboard x:Key="WarningBlink" RepeatBehavior="Forever" AutoReverse="True">
+    <!-- Warning blink (blinks once, then pauses for 3 seconds, repeats forever) -->
+    <Storyboard x:Key="WarningBlink" RepeatBehavior="Forever">
+        <!-- Fade in from 0 to 1 over 0.5 seconds -->
         <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                         From="1" To="0.2" Duration="0:0:0.6" />
+                         From="0" To="1"
+                         Duration="0:0:0.5"
+                         BeginTime="0:0:0" />
+        <!-- Fade out from 1 to 0 over 0.5 seconds -->
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="1" To="0"
+                         Duration="0:0:0.5"
+                         BeginTime="0:0:0.5" />
+        <!-- Stay at 0 (hidden) for 3 seconds before repeating -->
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0" To="0"
+                         Duration="0:0:3"
+                         BeginTime="0:0:1" />
     </Storyboard>
 
     <!-- Negative blink -->
@@ -14,15 +27,13 @@
                         From="Red" To="#66FF0000" Duration="0:0:0.5" />
     </Storyboard>
 
-    <!-- Generic indicator style -->
-    <Style x:Key="TimeIndicatorStyle" TargetType="Border">
+    <!-- Warning indicator style -->
+    <Style x:Key="WarningIndicatorStyle" TargetType="Border">
         <Setter Property="Opacity" Value="0" />
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="Orange" />
         <Style.Triggers>
-            <!-- Warning -->
             <DataTrigger Binding="{Binding CurrentState}" Value="{x:Static local:DisplayState.Warning}">
                 <Setter Property="Opacity" Value="1" />
-                <Setter Property="Background" Value="Orange" />
                 <DataTrigger.EnterActions>
                     <BeginStoryboard x:Name="WarnSB" Storyboard="{StaticResource WarningBlink}" />
                 </DataTrigger.EnterActions>
@@ -30,10 +41,16 @@
                     <StopStoryboard BeginStoryboardName="WarnSB" />
                 </DataTrigger.ExitActions>
             </DataTrigger>
-            <!-- Negative -->
+        </Style.Triggers>
+    </Style>
+
+    <!-- Negative indicator style -->
+    <Style x:Key="NegativeIndicatorStyle" TargetType="Border">
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="Background" Value="Red" />
+        <Style.Triggers>
             <DataTrigger Binding="{Binding CurrentState}" Value="{x:Static local:DisplayState.Negative}">
                 <Setter Property="Opacity" Value="1" />
-                <Setter Property="Background" Value="Red" />
                 <DataTrigger.EnterActions>
                     <BeginStoryboard x:Name="NegSB" Storyboard="{StaticResource NegativeBlink}" />
                 </DataTrigger.EnterActions>

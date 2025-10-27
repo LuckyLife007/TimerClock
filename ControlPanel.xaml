@@ -130,15 +130,11 @@
                                            FontSize="32"
                                            Text="{Binding TimeDisplay}"/>
                                 <Border x:Name="MiniWarningTimeIndicator"
-                                        Style="{StaticResource TimeIndicatorStyle}"
-                                        Background="Orange"
-                                        Opacity="0"
+                                        Style="{StaticResource WarningIndicatorStyle}"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"/>
                                 <Border x:Name="MiniNegativeTimeIndicator"
-                                        Style="{StaticResource TimeIndicatorStyle}"
-                                        Background="Red"
-                                        Opacity="0"
+                                        Style="{StaticResource NegativeIndicatorStyle}"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"/>
                         </Grid>

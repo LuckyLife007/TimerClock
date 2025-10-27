@@ -95,14 +95,10 @@
                                            FontFamily="Consolas"
                                            FontWeight="Bold"
                                            Text="{Binding TimeDisplay}"/>
-                                <Border x:Name="WarningTimeIndicator" Style="{StaticResource TimeIndicatorStyle}"
-                                        Background="Orange"
-                                        Opacity="0"
+                                <Border x:Name="WarningTimeIndicator" Style="{StaticResource WarningIndicatorStyle}"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"/>
-                                <Border x:Name="NegativeTimeIndicator" Style="{StaticResource TimeIndicatorStyle}"
-                                        Background="Red"
-                                        Opacity="0"
+                                <Border x:Name="NegativeTimeIndicator" Style="{StaticResource NegativeIndicatorStyle}"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"/>
                         </Grid>
