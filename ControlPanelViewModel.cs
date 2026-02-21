@@ -16,21 +16,21 @@ namespace TimerClockApp
         private string _timeDisplay = "00:00";
         private bool _disposed;
 
-        private DisplayState _currentState = DisplayState.Normal;
-
         /// <summary>
         /// Combined visual state used by the UI to decide which animation to play.
+        /// This is a computed property derived from timer and display state — it has
+        /// no backing field and cannot get out of sync with reality.
         /// </summary>
         public DisplayState CurrentState
         {
-            get => _currentState;
-            private set
+            get
             {
-                if (_currentState != value)
+                if (!_displayManager.ShowingClock && IsTimerRunning && !IsPaused)
                 {
-                    _currentState = value;
-                    OnPropertyChanged(nameof(CurrentState));
+                    if (IsNegative) return DisplayState.Negative;
+                    if (IsWarning) return DisplayState.Warning;
                 }
+                return DisplayState.Normal;
             }
         }
 
@@ -114,29 +114,6 @@ namespace TimerClockApp
             _logger.LogInformation("ControlPanelViewModel initialized");
         }
 
-        private void UpdateDisplayState()
-        {
-            if (!_displayManager.ShowingClock && IsTimerRunning && !IsPaused)
-            {
-                if (IsNegative)
-                {
-                    CurrentState = DisplayState.Negative;
-                }
-                else if (IsWarning)
-                {
-                    CurrentState = DisplayState.Warning;
-                }
-                else
-                {
-                    CurrentState = DisplayState.Normal;
-                }
-            }
-            else
-            {
-                CurrentState = DisplayState.Normal;
-            }
-        }
-
         private void StartTimer()
         {
             if (!IsTimerRunning)
@@ -206,23 +183,26 @@ namespace TimerClockApp
             switch (e.PropertyName)
             {
                 case nameof(TimerService.TimeLeft):
+                    UpdateTimeDisplay();
+                    break;
                 case nameof(TimerService.IsNegative):
                     UpdateTimeDisplay();
+                    OnPropertyChanged(nameof(CurrentState));
                     break;
                 case nameof(TimerService.IsRunning):
                     OnPropertyChanged(nameof(IsTimerRunning));
-                    UpdateDisplayState();
+                    OnPropertyChanged(nameof(CurrentState));
                     OnPropertyChanged(nameof(IsPlayPauseEnabled));
                     OnPropertyChanged(nameof(AutoModeEnabled));
                     break;
                 case nameof(TimerService.IsPaused):
                     OnPropertyChanged(nameof(IsPaused));
-                    UpdateDisplayState();
+                    OnPropertyChanged(nameof(CurrentState));
                     OnPropertyChanged(nameof(PlayPauseButtonText));
                     break;
                 case nameof(TimerService.IsWarning):
                     OnPropertyChanged(nameof(IsWarning));
-                    UpdateDisplayState();
+                    OnPropertyChanged(nameof(CurrentState));
                     break;
             }
         }
@@ -238,6 +218,7 @@ namespace TimerClockApp
         private void DisplayManager_DisplayTypeChanged(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(ShowingClock));
+            OnPropertyChanged(nameof(CurrentState));
             UpdateTimeDisplay();
         }
 
