@@ -1,5 +1,5 @@
 #define MyAppName "TimerClock"
-#define MyAppVersion "2.0.0"
+#define MyAppVersion "2.0.1"
 #define MyAppPublisher "LuckyLife007"
 #define MyAppURL "https://github.com/LuckyLife007/TimerClock"
 #define MyAppExeName "TimerClockApp.exe"
