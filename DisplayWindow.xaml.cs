@@ -43,13 +43,58 @@ namespace TimerClockApp
             MouseLeave += DisplayWindow_MouseLeave;
         }
 
-        // Draggable Icon Logic
+        // Manual drag state
+        private bool _isDragging;
+        private Point _dragOffset; // cursor offset from window top-left in logical pixels at drag start
+        private const double TopSnapThreshold = 10.0; // px from top of screen to trigger maximize
+
+        // Returns cursor position in logical screen coordinates (DPI-aware via WPF)
+        private Point CursorScreenPos() =>
+            new(Left + Mouse.GetPosition(this).X, Top + Mouse.GetPosition(this).Y);
+
         private void DragHandle_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
+            // If maximized, restore first and re-anchor window under cursor
+            if (IsMaximized())
             {
-                DragMove();
+                var cursor = CursorScreenPos();
+                RestoreToNormalSize();
+                Left = cursor.X - _normalSize.Width / 2;
+                Top = cursor.Y - 17; // mid-height of drag bar
             }
+
+            // Record cursor offset from window origin (after any restore/reposition)
+            _dragOffset = Mouse.GetPosition(this);
+            _isDragging = true;
+            CaptureMouse(); // capture on the Window, not the Button
+            e.Handled = true;
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (!_isDragging) return;
+            var cursor = CursorScreenPos();
+            Left = cursor.X - _dragOffset.X;
+            Top = cursor.Y - _dragOffset.Y;
+        }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+            if (!_isDragging) return;
+            _isDragging = false;
+            ReleaseMouseCapture();
+            if (Top <= TopSnapThreshold)
+                GoToMaximizedSize();
+        }
+
+        protected override void OnLostMouseCapture(MouseEventArgs e)
+        {
+            base.OnLostMouseCapture(e);
+            _isDragging = false;
         }
 
         // Simple size tracking - just store the normal size
