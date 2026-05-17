@@ -18,7 +18,7 @@ A professional dual-purpose application that combines countdown timer and clock 
 - Adjustable opacity for both control panel and display window
 - Always-on-top option for both windows
 - Configurable auto-switch interval in Auto mode
-- Drag-and-drop window positioning
+- Drag-and-drop window positioning (custom drag — side-snap disabled, top-edge maximize preserved)
 - Window state management (minimize, maximize, restore)
 
 ## Release Process

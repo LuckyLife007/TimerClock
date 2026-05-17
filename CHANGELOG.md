@@ -5,6 +5,11 @@ All notable changes to the TimerClock application will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2026-05-17
+
+### Changed
+- **Window Dragging**: Replaced `DragMove()` with a manual drag implementation to disable Windows side-snap while preserving top-edge maximize behavior
+
 ## [2.0.1] - 2026-02-21
 
 ### Fixed
